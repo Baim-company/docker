@@ -1,0 +1,37 @@
+networks:
+  default:
+    driver: bridge
+
+services:
+  identity.db:
+    image: postgres:latest
+    container_name: identity.db
+    environment:
+      POSTGRES_DB: BaimIdentity
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    networks:
+      - default
+    volumes:
+      - identity.db.data:/var/lib/postgresql/data
+ 
+  identity.api:
+    image: aykhan151618/baim.ms-identity:latest
+    container_name: identity.api
+    build:
+      context: ./Identity.API
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CONNECTION_STRING=Host=identity.db;Database=BaimIdentity;Username=postgres;Password=admin;Port=5432;
+    networks:
+      - default
+    ports:
+      - "8080:8080" 
+    depends_on:
+      - identity.db
+  
+volumes:
+   identity.db.data: 
