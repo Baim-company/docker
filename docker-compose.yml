@@ -1,6 +1,8 @@
 networks:
   default:
     driver: bridge
+  gateway-network:
+    external: true
 
 services:
   identity.db:
@@ -28,6 +30,7 @@ services:
       - CONNECTION_STRING=Host=identity.db;Database=BaimIdentity;Username=postgres;Password=admin;Port=5432;
     networks:
       - default
+      - gateway-network
     ports:
       - "8080:8080" 
     depends_on:
